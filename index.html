@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="計畫卡">
+<meta name="theme-color" content="#0f1613">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>交易計畫卡</title>
+<style>
+:root{--bg:#0f1613;--card:#17211d;--line:#26332d;--ink:#e8efea;--dim:#8fa79b;
+  --acc:#4ade80;--warn:#fbbf24;--bad:#f87171;--ok:#34d399}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;padding:10px 12px 60px;background:var(--bg);color:var(--ink);
+  font:16px/1.5 -apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC",sans-serif}
+h1{font-size:18px;margin:2px 0}
+.sub{color:var(--dim);font-size:12px;margin-bottom:10px}
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tabs button{flex:1;padding:11px;font-size:14px;font-weight:600;border:1px solid var(--line);
+  border-radius:9px;background:#22312a;color:var(--dim);margin:0}
+.tabs button.on{background:var(--acc);color:#04150c;border-color:var(--acc)}
+section{background:var(--card);border:1px solid var(--line);border-radius:12px;
+  padding:14px;margin-bottom:12px}
+h2{font-size:14px;margin:0 0 10px;color:var(--acc)}
+label{display:block;font-size:12px;color:var(--dim);margin:10px 0 4px}
+input[type=number],input[type=text],input[type=date],textarea,select{
+  width:100%;padding:11px 12px;font-size:17px;background:#0c120f;color:var(--ink);
+  border:1px solid var(--line);border-radius:9px;font-family:inherit}
+input:focus,textarea:focus{outline:none;border-color:var(--acc)}
+textarea{font-size:14px;min-height:44px;resize:vertical}
+.row{display:flex;gap:10px}.row>*{flex:1;min-width:0}
+.out{background:#0c120f;border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px}
+.kv{display:flex;justify-content:space-between;align-items:baseline;
+  padding:6px 0;border-bottom:1px dashed var(--line);font-size:14px}
+.kv:last-child{border-bottom:none}
+.kv b{font-size:19px;font-variant-numeric:tabular-nums}
+.k{color:var(--dim)}
+.big{font-size:26px!important;color:var(--acc)}
+.note{font-size:12px;color:var(--dim);margin-top:8px;line-height:1.6}
+.flag{padding:9px 11px;border-radius:8px;font-size:13px;margin-top:10px;line-height:1.55}
+.f-warn{background:#3a2f10;color:#fcd34d;border:1px solid #6b5416}
+.f-bad{background:#3d1a1a;color:#fca5a5;border:1px solid #7f2d2d}
+.f-ok{background:#12301f;color:#86efac;border:1px solid #1f5c38}
+ol.chain{margin:0;padding-left:22px}ol.chain li{margin-bottom:12px}
+.step{font-size:14px;font-weight:600;margin-bottom:5px}
+.chk{display:flex;align-items:center;gap:9px;margin:4px 0 5px}
+.chk input{width:22px;height:22px;accent-color:var(--acc);flex:none}
+.chk span{font-size:13px;color:var(--dim)}
+button{width:100%;padding:14px;font-size:16px;font-weight:600;border:none;
+  border-radius:10px;background:var(--acc);color:#04150c;margin-top:12px;font-family:inherit}
+button.sec{background:#22312a;color:var(--ink);border:1px solid var(--line)}
+pre{white-space:pre-wrap;word-break:break-all;background:#0c120f;border:1px solid var(--line);
+  border-radius:9px;padding:12px;font-size:12px;line-height:1.6;color:var(--dim);
+  max-height:280px;overflow:auto;font-family:ui-monospace,Menlo,monospace}
+.tag{display:inline-block;font-size:11px;padding:2px 7px;border-radius:5px;
+  background:#22312a;color:var(--dim);margin-left:6px}
+svg{width:100%;height:120px;display:block;margin-top:10px}
+.hide{display:none}
+.savebar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:-4px 0 12px}
+.savebar span{font-size:11px;color:var(--dim);line-height:1.4}
+button.mini{width:auto;flex:none;padding:9px 14px;font-size:13px;margin:0;
+  background:#22312a;color:var(--ink);border:1px solid var(--line)}
+.hdr{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+a.help{flex:none;font-size:12px;text-decoration:none;color:var(--acc);
+  border:1px solid var(--line);background:#22312a;border-radius:8px;padding:7px 11px;margin-top:2px}
+body{padding-top:max(10px,env(safe-area-inset-top))}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div>
+    <h1>交易計畫卡</h1>
+    <div class="sub">進場前填上半 · 持倉中移停損 · 出場後記 R</div>
+  </div>
+  <a class="help" href="manual.html">操作手冊</a>
+</div>
+
+<div class="tabs">
+  <button id="tb1" class="on" onclick="tab(1)">計畫卡</button>
+  <button id="tb2" onclick="tab(2)">R 帳本</button>
+</div>
+
+<div id="p1">
+<div class="savebar">
+  <span id="saveMsg">自動儲存在這台裝置的瀏覽器</span>
+  <button class="mini" onclick="newTrade()">新交易</button>
+</div>
+<section>
+  <h2>基本</h2>
+  <div class="row">
+    <div><label>日期</label><input type="date" id="d_date"></div>
+    <div><label>代號</label><input type="text" id="d_code" placeholder="2330" inputmode="numeric"></div>
+  </div>
+  <label>名稱</label><input type="text" id="d_name" placeholder="台積電">
+</section>
+
+<section>
+  <h2>① 倉位（先算這個,再看行情）</h2>
+  <div class="row">
+    <div><label>帳戶本金</label><input type="number" id="acct" value="30000" inputmode="decimal"></div>
+    <div><label>單筆風險 %</label><input type="number" id="riskpct" value="1" step="0.1" inputmode="decimal"></div>
+  </div>
+  <label>部位上限（驗證期保護,0 = 不限）</label>
+  <input type="number" id="cap" value="5000" inputmode="decimal">
+  <label class="chk" style="margin-top:12px"><input type="checkbox" id="overTier">
+    <span>本月已超過 28 萬 / 200 筆（手續費改百分比）</span></label>
+  <div class="row">
+    <div><label>進場價</label><input type="number" id="entry" step="0.01" inputmode="decimal"></div>
+    <div><label>停損價 <span class="tag">邏輯失效點</span></label>
+      <input type="number" id="stop" step="0.01" inputmode="decimal"></div>
+  </div>
+  <div class="out" id="posOut"></div>
+  <div class="note">停損放近 20 日結構低點下方一點（報表有這欄）。距離越小買越多,但太近會被雜訊掃掉。</div>
+</section>
+
+<section>
+  <h2>② 目標與盈虧比</h2>
+  <label>止盈價 <span class="tag">前方結構位置</span></label>
+  <input type="number" id="target" step="0.01" inputmode="decimal">
+  <div class="out" id="rrOut"></div>
+</section>
+
+<section>
+  <h2>③ 移動停損 <span class="tag">持倉中</span></h2>
+  <div class="row">
+    <div><label>目前股價</label><input type="number" id="cur" step="0.01" inputmode="decimal"></div>
+    <div><label>新結構低點</label><input type="number" id="newlow" step="0.01" inputmode="decimal"></div>
+  </div>
+  <label>緩衝 %（新停損 = 結構低點 × (1 − 緩衝)）</label>
+  <input type="number" id="buf" value="1" step="0.1" inputmode="decimal">
+  <label class="chk" style="margin-top:10px"><input type="checkbox" id="cfm">
+    <span>這個低點已被確認（回踩不破 / 再次突破）</span></label>
+  <div class="out" id="trOut"></div>
+  <div class="note"><b>只上移,不下移。</b>低點沒被確認前不要動——確認條件:回踩不破、或再次突破前高。
+    跌破則原假設失效,那是出場不是移停損。</div>
+</section>
+
+<section>
+  <h2>④ 九步決策鏈</h2>
+  <ol class="chain" id="chain"></ol>
+</section>
+
+<section>
+  <h2>⑤ 出場紀錄</h2>
+  <div class="row">
+    <div><label>出場價</label><input type="number" id="exit" step="0.01" inputmode="decimal"></div>
+    <div><label>出場原因</label><select id="why"><option value="">—</option>
+      <option>停損</option><option>移動停損</option><option>止盈</option>
+      <option>死叉</option><option>自己提前出（違規）</option></select></div>
+  </div>
+  <label>有沒有違反規則？</label>
+  <input type="text" id="viol" placeholder="無 / 有：說明">
+  <div class="out" id="exOut"></div>
+</section>
+
+<section>
+  <h2>⑥ 輸出</h2>
+  <button onclick="copyTxt('md',this)">複製 Markdown</button>
+  <button class="sec" onclick="reset()">清空重填</button>
+  <pre id="md"></pre>
+</section>
+</div>
+
+<div id="p2" class="hide">
+<section>
+  <h2>R 帳本</h2>
+  <div class="note" style="margin:0 0 10px">
+    把每筆的 R 貼進來（一行一筆,或用逗號分隔）。<b>紀錄留在你的 Obsidian,這裡只負責算。</b><br>
+    可以加註解:<code>+1.8 2330</code>,程式只讀第一個數字。
+  </div>
+  <textarea id="rlist" style="min-height:150px" placeholder="+1.85&#10;-1.00&#10;-1.05&#10;+3.20&#10;-0.98"></textarea>
+  <div class="out" id="ledOut"></div>
+  <svg id="curve" viewBox="0 0 300 120" preserveAspectRatio="none"></svg>
+  <div class="note" id="curveNote"></div>
+  <button onclick="copyTxt('rmd',this)">複製統計</button>
+  <pre id="rmd"></pre>
+</section>
+</div>
+
+<script>
+const FEE_FLAT=1, FEE_PCT=0.001425*0.28, TAX=0.003;
+// 每步 = [標題, [勾選項…]]。第 9 步刻意拆成兩格：
+// 事件濾網（無法回測,只能手查）與大盤濾網（唯一通過切樣本驗證的那條）
+// 分開記錄,季檢時才量得出各自擋掉的訊號表現差多少。
+const CHAIN=[
+ ["先算倉位",["部位算出來了,不是憑感覺決定買多少"]],
+ ["判斷市場階段",["通道上漲/下跌、單邊、橫盤——現在是哪一種？"]],
+ ["標出關鍵位置",["一張圖不超過幾條線；級別/距離/反應/可見度"]],
+ ["等待反應",["價格到了位置之後,K 線怎麼回應？"]],
+ ["疊加入場理由",["理由彼此獨立嗎？還是同一件事講三次？"]],
+ ["止損放邏輯失效點",["不是固定百分比,是「證明我看錯了」的那個價"]],
+ ["止盈看結構",["前方最近的重要位置,不是心裡想賺多少"]],
+ ["移動止損",["每確認一個新的結構低點就上移（用上面③算）"]],
+ ["確認可執行",["① 事件：未來 5 個交易日無財報／法說／除權息",
+                "② 大盤：加權指數收盤在 60MA 之上"]]
+];
+const $=id=>document.getElementById(id);
+const n=id=>parseFloat($(id).value)||0;
+const money=v=>Math.round(v).toLocaleString('zh-TW');
+function fee(a){return $('overTier').checked?Math.max(FEE_FLAT,a*FEE_PCT):FEE_FLAT;}
+
+$('chain').innerHTML=CHAIN.map((c,i)=>`<li><div class="step">${c[0]}</div>
+  ${c[1].map((s,j)=>`<label class="chk"><input type="checkbox" id="c${i}_${j}">
+    <span>${s}</span></label>`).join('')}
+  <textarea id="t${i}" placeholder="（選填）我的判斷…"></textarea></li>`).join('');
+
+function tab(k){
+  $('p1').className=k==1?'':'hide'; $('p2').className=k==2?'':'hide';
+  $('tb1').className=k==1?'on':''; $('tb2').className=k==2?'on':'';
+}
+
+function calc(){
+  const A=n('acct'),rp=n('riskpct'),cap=n('cap');
+  const P=n('entry'),S=n('stop'),T=n('target'),X=n('exit');
+  const riskAmt=A*rp/100, per=P-S;
+  if(!(P>0&&S>0&&per>0&&riskAmt>0)) return {ok:false};
+  let sh=Math.floor(riskAmt/per), capped=false;
+  if(cap>0&&sh*P>cap){sh=Math.floor(cap/P);capped=true;}
+  const amt=sh*P, realRisk=sh*per, ref=T>0?T:P;
+  const cost=fee(amt)+fee(sh*ref)+sh*ref*TAX;
+  return {ok:sh>0,P,S,T,X,A,per,stopPct:per/P*100,sh,amt,realRisk,
+    realRiskPct:realRisk/A*100,capped,cost,costR:realRisk?cost/realRisk:0};
+}
+
+function trail(r){
+  const cur=n('cur'), low=n('newlow'), buf=n('buf')/100;
+  if(!r.ok||!(low>0)) return null;
+  const ns=low*(1-buf);
+  const locked=(ns-r.P)*r.sh;
+  const lockedR=r.realRisk?locked/r.realRisk:0;
+  // 兩道防呆：停損只能上移（ns>原停損）；且不能跑到現價之上（否則一填就觸發）
+  const above=cur>0&&ns>=cur;
+  return {ns,cur,locked,lockedR,valid:ns>r.S&&!above,above,
+    distPct:cur>0?(cur-ns)/cur*100:null,
+    confirmed:$('cfm').checked};
+}
+
+function render(){
+  const r=calc();
+  // ① 倉位
+  $('posOut').innerHTML = !r.ok
+    ? '<div class="k" style="font-size:13px">填入進場價與停損價（停損須低於進場）</div>'
+    : (()=>{let f='';
+        if(r.capped)f+=`<div class="flag f-ok">已套用部位上限,實際風險 ${r.realRiskPct.toFixed(2)}%（比設定更安全）</div>`;
+        if(r.stopPct>10)f+=`<div class="flag f-warn">停損距離 ${r.stopPct.toFixed(1)}% 偏大,同樣風險只能買很少</div>`;
+        f+=r.costR>0.2
+          ?`<div class="flag f-bad">成本 = ${r.costR.toFixed(2)}R,超過 0.2R。這波段太小,不值得做</div>`
+          :`<div class="flag f-ok">成本 = ${r.costR.toFixed(2)}R（0.2R 以內）</div>`;
+        return `<div class="kv"><span class="k">可買股數</span><b class="big">${money(r.sh)} 股</b></div>
+        <div class="kv"><span class="k">部位金額</span><b>${money(r.amt)}</b></div>
+        <div class="kv"><span class="k">每股風險</span><b>${r.per.toFixed(2)}</b></div>
+        <div class="kv"><span class="k">停損距離</span><b>${r.stopPct.toFixed(2)}%</b></div>
+        <div class="kv"><span class="k">1R = 風險金額</span><b>${money(r.realRisk)}</b></div>
+        <div class="kv"><span class="k">佔本金</span><b>${r.realRiskPct.toFixed(2)}%</b></div>
+        <div class="kv"><span class="k">預估來回成本</span><b>${money(r.cost)}</b></div>`+f;})();
+  // ② 盈虧比
+  if(!r.ok||!(r.T>r.P)){
+    $('rrOut').innerHTML='<div class="k" style="font-size:13px">填入止盈價（需高於進場價）</div>';
+  }else{
+    const net=(r.T-r.P)*r.sh-r.cost, netR=net/r.realRisk, be=100/(1+netR);
+    const f=netR<1?`<div class="flag f-bad">扣成本後僅 ${netR.toFixed(2)}R。盈虧比 <1 需要 >50% 勝率,趨勢系統做不到</div>`
+      :netR<2?`<div class="flag f-warn">扣成本後 ${netR.toFixed(2)}R,需要 ${be.toFixed(0)}% 以上勝率</div>`
+      :`<div class="flag f-ok">扣成本後 ${netR.toFixed(2)}R,勝率 >${be.toFixed(0)}% 即為正期望值</div>`;
+    $('rrOut').innerHTML=`<div class="kv"><span class="k">盈虧比（毛）</span><b>${((r.T-r.P)/r.per).toFixed(2)} : 1</b></div>
+      <div class="kv"><span class="k">扣成本後</span><b class="big">${netR.toFixed(2)}R</b></div>
+      <div class="kv"><span class="k">目標獲利（淨）</span><b>${money(net)}</b></div>
+      <div class="kv"><span class="k">損益兩平勝率</span><b>${be.toFixed(0)}%</b></div>`+f;
+  }
+  // ③ 移動停損
+  const t=trail(r);
+  if(!t){
+    $('trOut').innerHTML='<div class="k" style="font-size:13px">持倉中,出現新的結構低點時填這裡</div>';
+  }else{
+    let f='';
+    if(!t.confirmed) f+=`<div class="flag f-warn">低點尚未勾選「已確認」。沒確認就移停損 = 提早把自己洗出場</div>`;
+    if(t.above) f+=`<div class="flag f-bad">新停損 ${t.ns.toFixed(2)} 已在現價 ${t.cur} 之上——一掛上去就會立刻成交。結構低點填錯了,或這根本是出場訊號</div>`;
+    else if(!t.valid) f+=`<div class="flag f-bad">新停損 ${t.ns.toFixed(2)} 低於原停損 ${r.S}。<b>停損只上移不下移</b>,這次不要動</div>`;
+    else if(t.lockedR>0) f+=`<div class="flag f-ok">已鎖定 +${t.lockedR.toFixed(2)}R —— 最壞情況變成獲利出場</div>`;
+    else f+=`<div class="flag f-ok">風險由 -1.00R 縮小到 ${t.lockedR.toFixed(2)}R</div>`;
+    $('trOut').innerHTML=`<div class="kv"><span class="k">新停損價</span><b class="big">${t.ns.toFixed(2)}</b></div>
+      <div class="kv"><span class="k">若被掃出的損益</span><b>${t.locked>0?'+':''}${money(t.locked)}</b></div>
+      <div class="kv"><span class="k">= 幾 R</span><b>${t.lockedR>0?'+':''}${t.lockedR.toFixed(2)}R</b></div>
+      ${t.distPct!==null?`<div class="kv"><span class="k">距現價</span><b>${t.distPct.toFixed(2)}%</b></div>`:''}`+f;
+  }
+  // ⑤ 出場
+  if(!r.ok||!r.X){
+    $('exOut').innerHTML='<div class="k" style="font-size:13px">平倉後填入出場價</div>';
+  }else{
+    const c2=fee(r.amt)+fee(r.sh*r.X)+r.sh*r.X*TAX;
+    const net=(r.X-r.P)*r.sh-c2, R=net/r.realRisk;
+    $('exOut').innerHTML=`<div class="kv"><span class="k">實現損益（淨）</span>
+      <b class="big" style="color:${R>0?'var(--ok)':'var(--bad)'}">${net>0?'+':''}${money(net)}</b></div>
+      <div class="kv"><span class="k">R 倍數</span><b>${R>0?'+':''}${R.toFixed(2)}R</b></div>
+      <div class="kv"><span class="k">報酬率</span><b>${(net/r.amt*100).toFixed(2)}%</b></div>
+      <div class="kv"><span class="k">實付成本</span><b>${money(c2)}</b></div>
+      <div class="flag ${R>0?'f-ok':'f-bad'}">把 <b>${R>0?'+':''}${R.toFixed(2)}R</b> 記進 R 帳本。累積 R 曲線才是成績單,不是帳戶餘額。</div>`;
+  }
+  buildMd(r,t);
+}
+
+function buildMd(r,t){
+  const date=$('d_date').value||'____-__-__';
+  let s=`## ${date} ${$('d_code').value||'____'} ${$('d_name').value||''}\n\n`;
+  if(r.ok){
+    s+=`**計畫**\n- 進場 ${r.P} / 停損 ${r.S}（距 ${r.stopPct.toFixed(2)}%）`;
+    if(r.T>r.P)s+=` / 止盈 ${r.T}`;
+    s+=`\n- 部位 ${money(r.sh)} 股 = ${money(r.amt)} 元｜1R = ${money(r.realRisk)} 元（本金 ${r.realRiskPct.toFixed(2)}%）\n`;
+    if(r.T>r.P)s+=`- 目標 ${(((r.T-r.P)*r.sh-r.cost)/r.realRisk).toFixed(2)}R（扣成本）\n`;
+    s+=`- 成本 ${money(r.cost)} 元 = ${r.costR.toFixed(2)}R\n`;
+  }
+  if(t&&t.valid)s+=`\n**移動停損**\n- 上移至 ${t.ns.toFixed(2)}（結構低點 ${n('newlow')}）→ 鎖定 ${t.lockedR>0?'+':''}${t.lockedR.toFixed(2)}R${t.confirmed?'　已確認':'　⚠️未確認'}\n`;
+  s+=`\n**九步**\n`;
+  CHAIN.forEach((c,i)=>{
+    const tx=($('t'+i).value||'').trim();
+    const all=c[1].every((_,j)=>$(`c${i}_${j}`).checked);
+    s+=`- [${all?'x':' '}] ${i+1}. ${c[0]}${tx?'：'+tx:''}\n`;
+    if(c[1].length>1) c[1].forEach((lab,j)=>{
+      s+=`    - [${$(`c${i}_${j}`).checked?'x':' '}] ${lab}\n`;});
+  });
+  if(r.ok&&r.X){
+    const c2=fee(r.amt)+fee(r.sh*r.X)+r.sh*r.X*TAX;
+    const net=(r.X-r.P)*r.sh-c2, R=net/r.realRisk;
+    s+=`\n**結果**\n- 出場 ${r.X}（${$('why').value||'—'}）\n`;
+    s+=`- 損益 ${net>0?'+':''}${money(net)} 元 = **${R>0?'+':''}${R.toFixed(2)}R**\n`;
+  }
+  s+=`- 有沒有違反規則：${$('viol').value||'（待填）'}\n`;
+  $('md').textContent=s;
+}
+
+// ── R 帳本 ──────────────────────────────────────────
+function parseR(){
+  return ($('rlist').value||'').split(/[\n,;]+/)
+    .map(x=>{const m=x.match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):null;})
+    .filter(v=>v!==null&&isFinite(v));
+}
+function ledger(){
+  const a=parseR();
+  if(a.length<1){
+    $('ledOut').innerHTML='<div class="k" style="font-size:13px">貼上你的 R 紀錄</div>';
+    $('curve').innerHTML='';$('curveNote').textContent='';$('rmd').textContent='';return;}
+  const w=a.filter(v=>v>0), l=a.filter(v=>v<=0);
+  const sum=a.reduce((x,y)=>x+y,0), avg=sum/a.length;
+  const sorted=[...a].sort((x,y)=>x-y);
+  const med=sorted.length%2?sorted[(sorted.length-1)/2]
+    :(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2;
+  const aw=w.length?w.reduce((x,y)=>x+y,0)/w.length:0;
+  const al=l.length?l.reduce((x,y)=>x+y,0)/l.length:0;
+  const rr=al?Math.abs(aw/al):0;
+  // 累積、回撤、連敗
+  let cum=0,peak=0,mdd=0,cur=0,worst=0,eq=[];
+  a.forEach(v=>{cum+=v;eq.push(cum);peak=Math.max(peak,cum);mdd=Math.max(mdd,peak-cum);
+    if(v<=0){cur++;worst=Math.max(worst,cur);}else cur=0;});
+  const f=avg>0.1?'f-ok':avg<-0.1?'f-bad':'f-warn';
+  const verdict=avg>0.1?`平均 ${avg.toFixed(2)}R —— 目前為正期望值`
+    :avg<-0.1?`平均 ${avg.toFixed(2)}R —— 目前為負期望值,檢討或停手`
+    :`平均 ${avg.toFixed(2)}R —— 約等於零,還看不出優勢`;
+  const need=a.length<30?`樣本只有 ${a.length} 筆,統計上還不能下結論（至少 30 筆才有初步意義,100 筆以上才穩）`
+    :a.length<100?`${a.length} 筆,有初步意義但仍不穩定`:`${a.length} 筆,樣本足夠`;
+  $('ledOut').innerHTML=`
+    <div class="kv"><span class="k">期望值（平均每筆）</span><b class="big" style="color:${avg>0?'var(--ok)':'var(--bad)'}">${avg>0?'+':''}${avg.toFixed(2)}R</b></div>
+    <div class="kv"><span class="k">筆數 / 勝率</span><b>${a.length} 筆 / ${(w.length/a.length*100).toFixed(0)}%</b></div>
+    <div class="kv"><span class="k">平均獲利 / 平均虧損</span><b>${aw.toFixed(2)}R / ${al.toFixed(2)}R</b></div>
+    <div class="kv"><span class="k">賺賠比</span><b>${rr.toFixed(2)} : 1</b></div>
+    <div class="kv"><span class="k">中位數</span><b>${med>0?'+':''}${med.toFixed(2)}R</b></div>
+    <div class="kv"><span class="k">累積</span><b>${sum>0?'+':''}${sum.toFixed(2)}R</b></div>
+    <div class="kv"><span class="k">最大回撤</span><b style="color:var(--bad)">-${mdd.toFixed(2)}R</b></div>
+    <div class="kv"><span class="k">最長連敗</span><b>${worst} 筆</b></div>
+    <div class="flag ${f}">${verdict}</div>
+    <div class="flag f-warn">${need}</div>`;
+  drawCurve(eq);
+  $('curveNote').textContent=`累積 R 曲線（${a.length} 筆）。往上=有優勢,橫走=零,往下=停手。`;
+  $('rmd').textContent=
+`**R 帳本統計**（${new Date().toISOString().slice(0,10)}）
+- 筆數 ${a.length}｜勝率 ${(w.length/a.length*100).toFixed(0)}%
+- 期望值 ${avg>0?'+':''}${avg.toFixed(2)}R／筆｜中位數 ${med.toFixed(2)}R
+- 平均獲利 ${aw.toFixed(2)}R｜平均虧損 ${al.toFixed(2)}R｜賺賠比 ${rr.toFixed(2)}:1
+- 累積 ${sum>0?'+':''}${sum.toFixed(2)}R｜最大回撤 -${mdd.toFixed(2)}R｜最長連敗 ${worst} 筆
+- ${need}
+`;
+}
+function drawCurve(eq){
+  const W=300,H=120,P=6;
+  const lo=Math.min(0,...eq), hi=Math.max(0,...eq), span=(hi-lo)||1;
+  const x=i=>P+i*(W-2*P)/Math.max(1,eq.length-1);
+  const y=v=>H-P-(v-lo)/span*(H-2*P);
+  const pts=eq.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  const zero=y(0);
+  $('curve').innerHTML=
+   `<line x1="0" y1="${zero}" x2="${W}" y2="${zero}" stroke="#26332d" stroke-width="1"/>
+    <polyline points="${pts}" fill="none" stroke="${eq[eq.length-1]>=0?'#4ade80':'#f87171'}" stroke-width="2"/>`;
+}
+
+function copyTxt(id,btn){
+  const t=$(id).textContent, done=()=>{const o=btn.textContent;
+    btn.textContent='已複製 ✓';setTimeout(()=>btn.textContent=o,1600);};
+  if(navigator.clipboard&&window.isSecureContext)
+    navigator.clipboard.writeText(t).then(done).catch(fb); else fb();
+  function fb(){const a=document.createElement('textarea');a.value=t;
+    a.style.position='fixed';a.style.opacity=0;document.body.appendChild(a);a.select();
+    try{document.execCommand('copy');done();}catch(e){alert('請長按下方文字手動複製');}
+    document.body.removeChild(a);}
+}
+function reset(){
+  ['d_code','d_name','entry','stop','target','exit','viol','cur','newlow'].forEach(i=>$(i).value='');
+  $('why').value='';$('cfm').checked=false;
+  CHAIN.forEach((c,i)=>{c[1].forEach((_,j)=>$(`c${i}_${j}`).checked=false);
+    $('t'+i).value='';});
+  render();save();
+}
+
+// ── 自動儲存 ────────────────────────────────────────
+// 存在 localStorage，只在這台裝置的這個瀏覽器有效。
+// Obsidian 仍然是母本——這裡只是讓你重開卡片時不用把數字抄回來。
+const SKEY='tradecard.v1';
+const today=()=>new Date().toISOString().slice(0,10);
+const fields=()=>[...document.querySelectorAll('input[id],textarea[id],select[id]')];
+
+let saveTimer=null;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(()=>{
+    try{
+      const o={};
+      fields().forEach(el=>{o[el.id]=el.type==='checkbox'?el.checked:el.value;});
+      localStorage.setItem(SKEY,JSON.stringify({t:Date.now(),o}));
+      const d=new Date();
+      $('saveMsg').textContent='已儲存 '+String(d.getHours()).padStart(2,'0')
+        +':'+String(d.getMinutes()).padStart(2,'0')+'　·　母本仍在 Obsidian';
+    }catch(e){ // 無痕模式／關閉儲存權限
+      $('saveMsg').textContent='⚠️ 這個瀏覽器不允許儲存，關掉頁面就會清空';
+    }
+  },250);
+}
+
+function load(){
+  let s=null;
+  try{s=JSON.parse(localStorage.getItem(SKEY)||'null');}catch(e){}
+  if(!s||!s.o){$('d_date').value=today();return;}
+  fields().forEach(el=>{
+    if(!(el.id in s.o))return;
+    if(el.type==='checkbox')el.checked=!!s.o[el.id]; else el.value=s.o[el.id];
+  });
+  if(!$('d_date').value)$('d_date').value=today();
+  const d=new Date(s.t);
+  $('saveMsg').textContent='已回復 '+d.toISOString().slice(0,10)+' 的內容　·　母本仍在 Obsidian';
+}
+
+function newTrade(){
+  if(!confirm('清空這筆，開始新交易？\n\n保留：帳戶本金、單筆風險%、部位上限、緩衝%、R 帳本\n清空：代號、價格、九步勾選與筆記、出場紀錄\n\n記得先把 Markdown 複製到 Obsidian。'))return;
+  reset();
+  $('d_date').value=today();
+  save();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.addEventListener('input',e=>{
+  if(e.target.id==='rlist')ledger(); else render();
+  save();});
+document.addEventListener('change',e=>{
+  if(e.target.id==='rlist')ledger(); else render();
+  save();});
+load();
+render();ledger();
+
+// 離線用：把整包存進瀏覽器快取，沒訊號時照樣打得開
+if('serviceWorker' in navigator)
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
