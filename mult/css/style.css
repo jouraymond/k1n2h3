@@ -286,3 +286,80 @@ table.syl td:first-child{font-weight:800;color:var(--sea-d);white-space:nowrap;w
   .chip,.result .row b{transform:scale(1)}
   body::after{display:none}
 }
+
+/* ==========================================================
+   平板（iPad）
+   直向：整體放大，小鎮畫面變寬
+   橫向：闖關頁改成左右兩欄，題目和鍵盤同時看得到
+   ========================================================== */
+@media (min-width:700px){
+  body{font-size:18px}
+  .wrap{max-width:640px;padding-left:24px;padding-right:24px}
+  .hud .logo{font-size:26px}
+  .pill{font-size:17px;padding:9px 17px 9px 13px}
+  .pill svg{width:23px;height:23px}
+  .title{font-size:27px}
+
+  /* 小鎮：關卡球隨畫面等比放大 */
+  .node{width:96px;height:96px;border-width:6px}
+  .node svg{width:52px;height:52px}
+  .node .halo{inset:-16px}
+  .stop .name{font-size:16px;padding:3px 15px}
+  .stop .stars{font-size:18px}
+
+  /* 闖關 */
+  .board{min-height:320px;padding:22px 22px 26px;border-radius:34px}
+  .mascot{width:96px;height:96px;top:-50px;left:16px}
+  .bubble{font-size:20px;padding:16px 20px;margin-top:22px}
+  .chip{width:21px;height:21px}
+  .chip::after{width:7px;height:5px;top:3px;left:4px}
+  .pile{padding:9px;border-radius:20px}
+  .pile .line{gap:6px}
+  .tray{gap:12px}
+  .cap{font-size:16px}
+  .eq{font-size:60px;gap:14px}
+  .key{height:76px;font-size:34px;border-radius:24px}
+  .key.small,.key.hint{font-size:22px}
+  .key.ok{font-size:24px}
+  .choice{font-size:30px;padding:21px 6px}
+  .say{font-size:21px}
+  .meter{height:24px}
+  .count{font-size:17px;min-width:52px}
+  .iconbtn{width:50px;height:50px;font-size:22px}
+  .result .row{font-size:58px}
+  .result .score{font-size:54px}
+
+  /* 貼紙簿 */
+  .album{grid-template-columns:repeat(5,1fr);gap:16px}
+  .album div{font-size:46px;border-radius:26px}
+
+  /* 家長區 */
+  .grid b,.grid i{font-size:13px;border-radius:8px}
+  .card{padding:20px}
+  .nums b{font-size:30px}
+}
+
+@media (min-width:1000px){
+  .wrap{max-width:720px}
+}
+
+/* iPad 橫放時的闖關版面：題目在左、鍵盤在右 */
+@media (min-width:860px) and (orientation:landscape){
+  .wrap.play{
+    max-width:960px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:"bar bar" "board input" "board say" "foot foot";
+    column-gap:30px;
+    align-content:start;
+  }
+  .wrap.play .gbar{grid-area:bar}
+  .wrap.play .board{grid-area:board;align-self:start;min-height:400px;margin-top:26px}
+  .wrap.play #input{grid-area:input;align-self:start;margin-top:26px}
+  .wrap.play .say{grid-area:say}
+  .wrap.play .foot{grid-area:foot}
+  .wrap.play .keys{margin-top:0}
+  .wrap.play .choices{margin-top:0}
+  .wrap.play .key{height:84px}
+  .wrap.play .eq{font-size:66px}
+}
