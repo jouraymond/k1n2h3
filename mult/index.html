@@ -1,1 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>花片小鎮</title>
+<meta name="theme-color" content="#BEE7F5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hud"></div>
+  <div class="town" id="town"></div>
+  <p class="foot" id="foot">每天玩 5～10 分鐘，比週末一次半小時有效</p>
+</div>
 
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script>
+drawHud("map");
+
+const town = document.getElementById("town");
+const points = LEVELS.map(L => [L.x, L.y]);
+town.innerHTML = townScene(points);
+
+LEVELS.forEach((L, i) => {
+  const open = S.allOpen || L.id <= S.unlocked;
+  const st = S.stars[L.id] || 0;
+  const isNext = open && st === 0;
+  const stop = document.createElement("div");
+  stop.className = "stop" + (open ? "" : " locked");
+  stop.style.left = (L.x / SCENE_W * 100) + "%";
+  stop.style.top  = (L.y / SCENE_H * 100) + "%";
+  stop.innerHTML =
+    (open
+      ? '<a class="node k' + (i % 6) + (isNext ? " now" : "") + '" href="play.html?lv=' + L.id + '">' +
+        (isNext ? '<span class="halo"></span>' : "") + icon(L.icon, 40, "#fff") + '</a>'
+      : '<span class="node locked">' +
+        '<svg viewBox="0 0 24 24" width="26" height="26" fill="#fff">' +
+        '<path d="M6 10V8a6 6 0 0 1 12 0v2h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V11a1 1 0 0 1 1-1zm2 0h8V8a4 4 0 0 0-8 0z"/></svg></span>') +
+    '<div class="stars">' + [0,1,2].map(k =>
+      '<span class="' + (k < st ? "" : "off") + '">★</span>').join("") + '</div>' +
+    '<div class="name">' + L.name + '</div>';
+  town.appendChild(stop);
+});
+
+/* 自動捲到目前該玩的關卡 */
+const next = document.querySelector(".node.now");
+if(next) setTimeout(() => {
+  const y = next.getBoundingClientRect().top + window.scrollY - window.innerHeight/2 + 60;
+  window.scrollTo({top: Math.max(0, y), behavior: "smooth"});
+}, 400);
+
+if(!Store.available)
+  document.getElementById("foot").textContent =
+    "這個環境不能儲存進度（預覽模式），放到自己的網站上就會正常記住";
+</script>
+</body>
+</html>

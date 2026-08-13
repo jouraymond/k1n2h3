@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>花片小鎮 — 家長區</title>
+<meta name="theme-color" content="#BEE7F5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hud"></div>
+  <h1 class="title">家長區</h1>
+
+  <div class="card">
+    <h2>十十乘法熟練地圖</h2>
+    <div class="grid" id="grid"></div>
+    <div class="peek" id="peek"><small>點一格看看</small></div>
+    <div class="legend">
+      <span><em style="background:#EEF3F6"></em>還沒練</span>
+      <span><em style="background:#FFDCD3"></em>剛開始</span>
+      <span><em style="background:#FFEBBC"></em>會了</span>
+      <span><em style="background:#A8E2C0"></em>很熟</span>
+      <span><em style="background:#4FAE7B"></em>反射</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>累計</h2>
+    <div class="nums">
+      <div><b id="n-total">0</b><small>總答題數</small></div>
+      <div><b id="n-rate">—</b><small>正確率</small></div>
+      <div><b id="n-mas">0</b><small>已反射</small></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>最需要加強</h2>
+    <div id="weak"></div>
+  </div>
+
+  <div class="card">
+    <h2>課綱對照（108 課綱・二年級）</h2>
+    <table class="syl" id="syl"></table>
+  </div>
+
+  <div class="card">
+    <h2>設定</h2>
+    <div class="opt"><div><b>音效</b><small>只有答對會出聲</small></div>
+      <button class="sw" id="sw-sound" aria-pressed="true" aria-label="音效"></button></div>
+    <div class="opt"><div><b>全部關卡解鎖</b><small>想跳著練時打開</small></div>
+      <button class="sw" id="sw-all" aria-pressed="false" aria-label="全部解鎖"></button></div>
+  </div>
+
+  <button class="danger" id="reset">清除所有進度與貼紙</button>
+  <p class="foot">進度存在這台裝置的瀏覽器，換裝置或清除瀏覽資料就會消失</p>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script>
+drawHud("parent");
+const $ = id => document.getElementById(id);
+
+let h = "<b></b>" + Array.from({length:10}, (_,i) => "<b>" + (i+1) + "</b>").join("");
+for(let r=1;r<=10;r++){
+  h += "<b>" + r + "</b>";
+  for(let c=1;c<=10;c++){
+    const k = fkey(r,c), f = S.facts[k];
+    h += '<i class="' + (f && f.box ? "b" + f.box : "") + '" data-k="' + k +
+         '" data-r="' + r + '" data-c="' + c + '">' + (r*c) + "</i>";
+  }
+}
+$("grid").innerHTML = h;
+$("grid").addEventListener("click", e => {
+  const cell = e.target.closest("i");
+  if(!cell) return;
+  document.querySelectorAll(".grid i.lit").forEach(x => x.classList.remove("lit"));
+  document.querySelectorAll('.grid i[data-k="' + cell.dataset.k + '"]')
+    .forEach(x => x.classList.add("lit"));
+  const r = +cell.dataset.r, c = +cell.dataset.c;
+  $("peek").innerHTML = r + " × " + c + " = " + (r*c) + "<small>" + kouJue(r,c) + "</small>";
+});
+
+$("n-total").textContent = S.total;
+$("n-rate").textContent = S.total ? Math.round(S.correct / S.total * 100) + "%" : "—";
+$("n-mas").textContent = Object.keys(S.facts).filter(k => S.facts[k].box === 5).length;
+
+const weak = Object.keys(S.facts)
+  .filter(k => S.facts[k].wrong > 0)
+  .sort((a,b) => (S.facts[b].wrong - S.facts[b].right) - (S.facts[a].wrong - S.facts[a].right))
+  .slice(0,8);
+$("weak").innerHTML = weak.length
+  ? '<div class="legend">' + weak.map(k => {
+      const p = k.split("x");
+      return '<span style="font-size:15px;color:#B84A32;background:#FFDCD3;border-radius:10px;padding:4px 10px">' +
+             p[0] + "×" + p[1] + " · 錯" + S.facts[k].wrong + "</span>";
+    }).join("") + "</div>"
+  : '<p style="margin:0;color:#5C7285;font-size:13.5px;font-weight:700">還沒有錯過的題目。</p>';
+
+$("syl").innerHTML = CURRICULUM.map(x =>
+  "<tr><td>" + x[0] + "</td><td>" + x[1] + "</td></tr>").join("");
+
+function bindSwitch(id, get, set){
+  const el = $(id);
+  el.setAttribute("aria-pressed", get());
+  el.onclick = () => { set(!get()); el.setAttribute("aria-pressed", get()); save(); };
+}
+bindSwitch("sw-sound", () => S.sound, v => { S.sound = v; if(v) chime(); });
+bindSwitch("sw-all", () => S.allOpen, v => { S.allOpen = v; });
+
+$("reset").onclick = () => {
+  if(!confirm("所有進度和貼紙都會不見，確定嗎？")) return;
+  S = Store.blank();
+  save();
+  location.href = "index.html";
+};
+</script>
+</body>
+</html>

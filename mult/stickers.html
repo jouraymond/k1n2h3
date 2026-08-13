@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>花片小鎮 — 貼紙簿</title>
+<meta name="theme-color" content="#BEE7F5">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="hud"></div>
+  <h1 class="title">貼紙簿 <small id="tip"></small></h1>
+  <div class="album" id="album"></div>
+  <p class="foot">每過一關拿一張，拿到三顆星再多一張</p>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/store.js"></script>
+<script src="js/ui.js"></script>
+<script>
+drawHud("stickers");
+document.getElementById("tip").textContent = S.stickers.length + " / " + STICKERS.length;
+document.getElementById("album").innerHTML = STICKERS.map(s =>
+  S.stickers.indexOf(s) >= 0 ? "<div>" + s + "</div>" : '<div class="empty">?</div>'
+).join("");
+</script>
+</body>
+</html>
