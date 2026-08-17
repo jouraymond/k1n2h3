@@ -1,1 +1,500 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>冰河遺民：櫻花鉤吻鮭的回家故事</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700&family=Zen+Maru+Gothic:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#5AB9EA;
+  --deep:#1A4D8F;
+  --pink:#FF8BA7;
+  --light:#FFF8E8;
+  --green:#6AC17A;
+  --sand:#E8D5B5;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:#E6F4FF; font-family:"Zen Maru Gothic","Noto Sans TC",sans-serif;
+  color:#2b2b2b; overflow-x:hidden;
+}
+.book{
+  max-width:860px; margin:0 auto; min-height:100vh; position:relative;
+  background:var(--light); box-shadow:0 20px 60px rgba(0,0,0,.15);
+}
+.progress{
+  height:8px; background:#e0e0e0; position:sticky; top:0; z-index:20;
+}
+.progress-bar{height:100%; width:0%; background:linear-gradient(90deg,var(--blue),var(--pink)); transition:width .6s ease;}
+.page{
+  display:none; padding:28px 24px 90px; min-height:calc(100vh - 8px);
+  animation:fadeIn .6s ease;
+}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:translateY(0)}}
+h1{font-size:2.2rem; line-height:1.2; margin:.2em 0; color:var(--deep)}
+h2{font-size:1.7rem; color:var(--deep); margin:.5em 0}
+p{font-size:1.25rem; line-height:1.8; letter-spacing:.5px}
+.kid{font-size:1.35rem; line-height:2}
+.badge{display:inline-block; background:var(--blue); color:white; border-radius:20px; padding:4px 14px; font-size:1rem; margin-bottom:8px}
+.btn{
+  border:none; border-radius:30px; padding:12px 22px; font-size:1.1rem; font-weight:700;
+  cursor:pointer; box-shadow:0 4px 12px rgba(0,0,0,.15); transition:.2s;
+}
+.btn-primary{background:var(--deep); color:white}
+.btn-pink{background:var(--pink); color:white}
+.btn-green{background:var(--green); color:white}
+.btn:hover{transform:translateY(-2px)}
+.nav{
+  position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+  background:white; border-radius:40px; padding:8px 12px;
+  display:flex; gap:10px; box-shadow:0 8px 24px rgba(0,0,0,.2); z-index:30;
+}
+.scene{
+  background:white; border-radius:24px; padding:16px; margin:16px 0;
+  border:3px dashed #cbe6ff; position:relative; overflow:hidden;
+}
+.river{
+  height:180px; background:linear-gradient(180deg,#b9e6ff 0%,#5AB9EA 100%);
+  border-radius:16px; position:relative; overflow:hidden; margin:12px 0;
+}
+.fish{
+  position:absolute; font-size:2rem; cursor:pointer; transition:all .4s; user-select:none;
+}
+.tree{font-size:2.2rem; cursor:pointer; display:inline-block; transition:.3s}
+.dam{
+  width:70px; height:90px; background:#8B7355; display:inline-flex; align-items:center; justify-content:center;
+  border-radius:8px; margin:6px; cursor:pointer; color:white; font-weight:700;
+}
+.quiz-opt{
+  background:white; border:2px solid var(--blue); border-radius:16px; padding:12px; margin:8px 0;
+  cursor:pointer; font-size:1.15rem;
+}
+.quiz-opt.correct{background:#d1f5d9; border-color:var(--green)}
+.quiz-opt.wrong{background:#ffd6d6; border-color:var(--pink)}
+.cover-bg{
+  background:linear-gradient(180deg,#A8D8EA 0%,#fff 100%); text-align:center; padding-top:30px;
+}
+.big-fish{font-size:6rem; animation:swim 3s infinite ease-in-out}
+@keyframes swim{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
+.mountain{font-size:3rem}
+.counter{font-size:3rem; font-weight:900; color:var(--deep)}
+.author-box{
+  background:#f0f7ff; border-left:6px solid var(--deep); padding:12px 16px; border-radius:8px; margin:20px 0;
+}
+details{margin:12px 0; background:white; border-radius:12px; padding:12px}
+summary{cursor:pointer; font-weight:700; font-size:1.1rem}
+.hide{display:none}
+.sparkle{position:absolute; pointer-events:none; animation:pop 0.8s forwards}
+@keyframes pop{0%{transform:scale(0) translateY(0); opacity:1}100%{transform:scale(1.5) translateY(-40px); opacity:0}}
+</style>
+</head>
+<body>
+<div class="book">
+<div class="progress"><div class="progress-bar" id="prog"></div></div>
 
+<!-- PAGE 0 COVER -->
+<div class="page active" id="p0">
+  <div class="cover-bg" style="border-radius:24px; min-height:70vh; display:flex; flex-direction:column; justify-content:center; align-items:center">
+    <div class="badge">小學二年級互動繪本</div>
+    <h1>冰河遺民<br>櫻花鉤吻鮭的<br>回家故事</h1>
+    <div class="big-fish">🐟🌸</div>
+    <div style="margin:12px auto; max-width:420px; background:white; border-radius:16px; padding:8px; box-shadow:0 4px 12px rgba(0,0,0,.15)">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/bf/DSC08243_%E6%AB%BB%E8%8A%B1%E9%89%A4%E5%90%BB%E9%AE%AD%E7%9A%84%E5%84%AA%E6%B8%B8%E8%87%AA%E5%9C%A8.jpg" alt="櫻花鉤吻鮭真實照片" style="width:100%; border-radius:12px; display:block" loading="lazy">
+      <div style="font-size:.8rem; color:#555; margin-top:6px; text-align:left">📷 真實的櫻花鉤吻鮭在七家灣溪優游自在<br>來源：Wikimedia Commons / 創用CC，雪霸國家公園提供</div>
+    </div>
+    <p style="margin-top:10px">從冰河時代游到現在的小魚</p>
+    <div style="margin-top:12px">
+      <span class="mountain">🏔️</span><span style="font-size:2.5rem">❄️</span><span class="mountain">🌲</span>
+    </div>
+    <div class="author-box" style="margin-top:20px; text-align:left; max-width:360px">
+      <div>📖 原文作者：<b>陳 加忠</b></div>
+      <div style="font-size:.95rem; opacity:.8">改編：給小學二年級的互動繪本<br>保留原文精神與知識</div>
+    </div>
+    <button class="btn btn-primary" onclick="go(1)" style="margin-top:16px">開始閱讀 ➜</button>
+  </div>
+  <p style="text-align:center; font-size:.9rem; opacity:.6; margin-top:20px">點擊魚魚，牠會跟你打招呼喔！</p>
+</div>
+
+<!-- PAGE 1 -->
+<div class="page" id="p1">
+  <div class="badge">第1章 奇怪的發現</div>
+  <h2>咦？台灣的高山上，怎麼會有鮭魚？</h2>
+  <p class="kid">鮭魚大多住在很冷很冷的地方，像是北海道、阿拉斯加。<br>牠們會在冰冷的河裡出生，游到大海長大，再游回來生寶寶。</p>
+  <div class="scene">
+    <p>👉 點點看，鮭魚的旅行</p>
+    <div class="river" id="river1">
+      <div style="position:absolute; left:10px; top:20px">🏞️ 河流出生</div>
+      <div style="position:absolute; left:40%; top:80px">🌊 大海長大</div>
+      <div style="position:absolute; right:10px; top:20px">🏠 回家生寶寶</div>
+      <div class="fish" id="f1" style="left:10px; top:110px" onclick="swimFish(this)">🐟</div>
+    </div>
+    <p style="font-size:1rem">可是，在溫暖的台灣，武陵的高山溪流裡，竟然也有一群鮭魚，世世代代住在那裡！牠們叫做：<b>台灣櫻花鉤吻鮭</b></p>
+  </div>
+  <div class="author-box">原文重點：鮭魚是寒帶魚類，卻在亞熱帶的台灣山區世世代代生活在溪流裡，棲息於大甲溪上游七家灣溪，環境一破壞就危險。</div>
+  <button class="btn btn-primary" onclick="go(2)">下一頁：原來族人早就認識牠</button>
+</div>
+
+<!-- PAGE 2 -->
+<div class="page" id="p2">
+  <div class="badge">第2章 山裡的老師</div>
+  <h2>泰雅族爺爺早就認識牠！</h2>
+  <p class="kid">梨山、環山、武陵，山谷又深又長。很久以前沒有車子，要走好幾天才進得去。<br>外地人不認識深山裡的魚，可是<b>泰雅族</b>天天靠著溪水生活，最了解牠！</p>
+  <div class="scene">
+    <p>1917年以前，泰雅族就用自己的話叫這種魚。<br>日本時代的人寫成 <b>Saramao masu</b></p>
+    <p>🔊 點點看族語小教室</p>
+    <button class="btn btn-pink" onclick="speak('Saramao')">Saramao = 環山的地名</button>
+    <button class="btn btn-green" onclick="speak('masu')" style="margin-left:6px">masu = 鮭魚</button>
+    <div style="margin-top:12px; font-size:2rem">👨‍🌾⛰️🐟🗣️</div>
+  </div>
+  <div class="author-box">原文重點：1917年以前泰雅族已用族語稱呼此魚；日治文獻記為 Saramao masu，與環山地名及日文鮭鱒稱呼有關。</div>
+  <button class="btn btn-primary" onclick="go(3)">下一頁：一條鹽醃的魚</button>
+</div>
+
+<!-- PAGE 3 -->
+<div class="page" id="p3">
+  <div class="badge">第3章 1917年的包裹</div>
+  <h2>一條被鹽醃的魚，送到青木先生面前</h2>
+  <p class="kid">1917年，有一位日本人 <b>青木赳雄</b>，在台灣總督府研究魚魚。他聽說大甲溪上游有怪魚。<br>送到他手上的不是活魚，而是一條<b>用鹽巴醃起來、內臟都拿掉的標本</b>！</p>
+  <div class="scene" style="text-align:center">
+    <div style="font-size:4rem" id="saltFish" onclick="shake(this)">🐟🧂📦</div>
+    <p>點一下魚，幫青木先生檢查！</p>
+    <div id="checkResult" class="hide">
+      <p>🔍 青木先生發現：有鮭魚的特徵！這可能是大發現！<br>他拍照、做記錄，帶進科學世界。</p>
+      <p style="font-size:2rem">📸➡️🔬</p>
+    </div>
+  </div>
+  <div class="author-box">原文重點：1917年青木赳雄收到鹽漬標本，檢視形態具鮭鱒類特徵，記錄拍照，成為臺灣鮭魚進入科學的重要起點。</div>
+  <button class="btn btn-primary" onclick="go(4)">下一頁：幫魚魚取名字</button>
+</div>
+
+<!-- PAGE 4 -->
+<div class="page" id="p4">
+  <div class="badge">第4章 取名字大會</div>
+  <h2>大島先生和美國老師幫牠取名字</h2>
+  <p class="kid">把魚真正帶進全世界的，是 <b>大島正滿</b> 爺爺。1918年他仔細看魚的身體：鰭有幾根？鱗片怎麼排？嘴巴和牙齒長怎樣？<br>1919年，他和美國的 Jordan 爺爺一起發表：<b>Salmo formosanus</b>，Formosa 就是台灣！</p>
+  <div class="scene">
+    <p>點點看，為什麼叫櫻花鉤吻鮭？</p>
+    <div style="display:flex; gap:12px; flex-wrap:wrap">
+      <div class="quiz-opt" onclick="reveal(this,'🌸 繁殖季節，魚身體會變紅紅的，像山櫻花！')">🌸 櫻花是？</div>
+      <div class="quiz-opt" onclick="reveal(this,'🪝 公魚的嘴巴彎彎的，像鉤子一樣！')">🪝 鉤吻是？</div>
+    </div>
+    <p style="font-size:.95rem; margin-top:10px">後來大家也叫牠 Oncorhynchus formosanus / 臺灣鉤吻鮭，最熟的還是<b>櫻花鉤吻鮭</b>。</p>
+  </div>
+  <div class="author-box">原文重點：分類靠外形比例、鰭條、鱗片、斑紋、頭部、牙齒。1919年命名 Salmo formosanus Jordan & Oshima, 2012年後重視 Oncorhynchus formosanus。櫻花指婚姻色，鉤吻指雄魚彎吻。</div>
+  <button class="btn btn-primary" onclick="go(5)">下一頁：冰河大旅行</button>
+</div>
+
+<!-- PAGE 4.5 REAL PHOTO RECOGNITION -->
+<div class="page" id="p4b">
+  <div class="badge">特別頁：真的認識牠</div>
+  <h2>來！真的櫻花鉤吻鮭長這樣！</h2>
+  <p class="kid">小朋友，現在我們來當小小魚類學家，像大島正滿爺爺一樣觀察！</p>
+  <div class="scene" style="text-align:center">
+    <div style="position:relative; display:inline-block; max-width:560px">
+      <img id="realFishImg" src="https://upload.wikimedia.org/wikipedia/commons/b/bf/DSC08243_%E6%AB%BB%E8%8A%B1%E9%89%A4%E5%90%BB%E9%AE%AD%E7%9A%84%E5%84%AA%E6%B8%B8%E8%87%AA%E5%9C%A8.jpg" 
+           alt="櫻花鉤吻鮭成魚真實照片" style="width:100%; border-radius:20px; border:4px solid var(--deep)" >
+      <!-- interactive hotspots -->
+      <div style="position:absolute; left:18%; top:42%; background:rgba(26,77,143,.85); color:white; border-radius:20px; padding:4px 10px; font-size:.9rem" onclick="alert('這是深色橢圓斑點，成魚有9個！幼魚約15公分，成魚約30公分。')">● 9個斑點</div>
+      <div style="position:absolute; right:10%; top:18%; background:rgba(255,139,167,.9); color:white; border-radius:20px; padding:4px 10px; font-size:.9rem" onclick="alert('繁殖季節，身體變成櫻花紅色！所以叫櫻花！')">🌸 櫻花紅</div>
+      <div style="position:absolute; left:55%; bottom:12%; background:rgba(106,193,122,.9); color:white; border-radius:20px; padding:4px 10px; font-size:.9rem" onclick="alert('公魚嘴巴彎彎像鉤子，叫鉤吻！')">🪝 鉤吻</div>
+    </div>
+    <p style="font-size:1rem; margin-top:12px; text-align:left">
+      🔍 <b>仔細看特徵（來自維基百科）：</b><br>
+      • 身體側扁像紡錘，長約30公分<br>
+      • 背部青綠色像松石，肚子銀白色<br>
+      • 身體兩側有9個垂直橢圓深色斑 + 11-31個小黑點<br>
+      • 繁殖時公魚變深紅色<br>
+      • 點點上面的標籤，記起來喔！
+    </p>
+    <button class="btn btn-green" onclick="document.getElementById('realFishImg').style.filter='hue-rotate(340deg) saturate(1.5)'; setTimeout(()=>document.getElementById('realFishImg').style.filter='',1500)">點我，看櫻花婚姻色！</button>
+    <div style="margin-top:12px; font-size:.85rem; color:#666; text-align:left; background:#f9f9f9; padding:8px; border-radius:8px">
+      照片授權：Wikimedia Commons - DSC08243 櫻花鉤吻鮭的優游自在.jpg / CC BY-SA<br>
+      學名：Oncorhynchus masou formosanus (Jordan & Oshima, 1919) / 台灣特有亞種
+    </div>
+  </div>
+  <div class="author-box">原文重點：成魚30公分、幼魚15公分、側扁紡錘、背部青綠、腹部銀白、9個垂直橢圓深色斑、11-31小黑點、雄魚繁殖深紅、嘴寬斜裂至眼下。需16度以下冷水。</div>
+  <button class="btn btn-primary" onclick="go(5)">我認識牠了，下一頁</button>
+</div>
+
+<!-- PAGE 5 -->
+
+<div class="page" id="p5">
+  <div class="badge">第5章 冰河時代的遺民</div>
+  <h2>為什麼寒帶的魚，會住在台灣？</h2>
+  <p class="kid">很久很久以前，<b>冰河時代</b>，地球好冷，鮭魚往南游，游到台灣的河。<br>後來地球變暖，平地的河變熱了，牠們只好一直往上、往上，躲到最高、最冷的溪，留在大甲溪上游。</p>
+  <div class="scene">
+    <div class="river" id="iceRiver" style="height:220px; background:linear-gradient(180deg,#e0f7ff,#5AB9EA)">
+      <div style="position:absolute; top:10px; left:10px">❄️ 冰河時代：往南游 ➜</div>
+      <div style="position:absolute; bottom:10px; right:10px">☀️ 變暖了：往高處躲 ⬆️</div>
+      <div class="fish" style="left:50%; top:50%" id="iceFish">🐟</div>
+    </div>
+    <button class="btn btn-green" onclick="document.getElementById('iceFish').style.top=Math.random()*120+'px'; document.getElementById('iceFish').style.left=Math.random()*60+20+'%'">點我，讓魚魚躲到冷水裡</button>
+    <p style="margin-top:10px">一般的鮭魚會去大海，台灣的鮭魚<b>陸封</b>了，一輩子都在淡水裡出生、長大、生寶寶、死掉。所以我們叫牠 <b>冰河時期的遺民</b>！</p>
+  </div>
+  <div class="author-box">原文重點：更新世冰期祖先南下，冰期後退向高海拔冷水上游，形成陸封化，不再入海，完成淡水生活史，身體保存遠古氣候痕跡。</div>
+  <button class="btn btn-primary" onclick="go(6)">下一頁：魚魚的家長怎樣？</button>
+</div>
+
+<!-- PAGE 6 -->
+<div class="page" id="p6">
+  <div class="badge">第6章 七家灣溪的家</div>
+  <h2>魚魚的家，需要什麼？</h2>
+  <p class="kid"><b>七家灣溪</b>海拔很高，水很冰，河床有大石頭、小石頭。森林會遮太陽，讓水不會太熱。葉子掉到水裡，變成食物。</p>
+  <div class="scene">
+    <p>幫魚魚蓋一個舒服的家！點點看要什麼？</p>
+    <div id="habitat" style="display:flex; flex-wrap:wrap; gap:8px; margin:10px 0">
+      <span class="tree" onclick="addHabitat(this,'🌊 深潭：躲起來')">🌊</span>
+      <span class="tree" onclick="addHabitat(this,'💧 淺瀨：含氧高')">💧</span>
+      <span class="tree" onclick="addHabitat(this,'🪨 石縫：產卵床')">🪨</span>
+      <span class="tree" onclick="addHabitat(this,'🌲 森林遮蔭：水才不會變熱')">🌲</span>
+      <span class="tree" onclick="addHabitat(this,'🍂 落葉：小蟲食物')">🍂</span>
+      <span class="tree" onclick="addHabitat(this,'🪵 倒木：躲洪水')">🪵</span>
+    </div>
+    <div id="habitatList" style="background:#f0fff0; border-radius:12px; padding:8px; min-height:50px"></div>
+    <p style="font-size:1rem">雌魚會用尾巴掃礫石，蓋產卵床。水要能穿過石頭縫，魚卵才有氧氣。泥沙太多，魚卵會窒息喔！</p>
+  </div>
+  <div class="author-box">原文重點：七家灣溪高海拔、低溫、礫石卵石巨石、跌水淺瀨深潭、森林遮蔭降溫、提供能量。幼魚喜緩流遮蔽，大魚用深潭石縫，繁殖需礫石產卵床，水流供氧，泥沙淤積會致死。</div>
+  <button class="btn btn-primary" onclick="go(7)">下一頁：遇到危險了</button>
+</div>
+
+<!-- PAGE 7 -->
+<div class="page" id="p7">
+  <div class="badge">第7章 1995年的危機</div>
+  <h2>只剩下200多條魚！怎麼辦？</h2>
+  <p class="kid">戰後，大家大量開發山區。毒魚、電魚、種菜、肥料農藥、蓋馬路、蓋<b>攔砂壩</b>，把一條長長的河切成一塊一塊，魚不能游來游去。<br>颱風來，洪水沖，魚魚更辛苦。</p>
+  <div class="scene">
+    <p>攔砂壩擋住了路，點一下把它拆掉！</p>
+    <div id="dams">
+      <div class="dam" onclick="removeDam(this)">攔砂壩<br>❌</div>
+      <div class="dam" onclick="removeDam(this)">攔砂壩<br>❌</div>
+      <div class="dam" onclick="removeDam(this)">攔砂壩<br>❌</div>
+    </div>
+    <div class="river" style="height:100px; margin-top:12px"><div id="freeFish" style="position:absolute; left:10px; top:30px; font-size:2rem">🐟💨</div></div>
+    <p id="damMsg" class="hide">太好了！河又連起來了！砂石和有機物可以流動，魚可以自由上下游了。</p>
+    <p style="margin-top:12px"><b>1980-1995年</b>，野外只剩 <span class="counter" id="c1995">200</span> 尾。會沒有多樣性、生病、一次災害就滅絕！</p>
+  </div>
+  <div class="author-box">原文重點：戰後盲目開發、保育制度不執行、毒電魚、農業污染、河道工程切斷水流。攔砂壩分割河段，降低抗洪能力。1995年僅剩約兩百多尾，面臨遺傳、繁殖、滅絕風險。</div>
+  <button class="btn btn-primary" onclick="go(8)">下一頁：大家來幫忙</button>
+</div>
+
+<!-- PAGE 8 -->
+<div class="page" id="p8">
+  <div class="badge">第8章 保育大作戰</div>
+  <h2>雪霸國家公園與好多人的努力</h2>
+  <p class="kid">要救魚，不能只把魚關起來養。真正的保育是讓魚自己能在河裡生寶寶！</p>
+  <div class="scene">
+    <p>保育做了什麼？點點看種樹！</p>
+    <div id="forest" style="font-size:2rem; line-height:2.5rem; cursor:pointer">🌱🌱🌱🌱🌱</div>
+    <ul style="font-size:1.1rem; line-height:1.7">
+      <li onclick="growTree()">🌲 廢耕還林、種樹遮蔭、穩定土壤</li>
+      <li>🚜 收回農地、處理污水、減少農藥</li>
+      <li>🔬 長期調查水溫、水質、小蟲、魚數量</li>
+      <li>🐣 人工採卵、授精、孵化，爭取時間（不能取代自然河川）</li>
+      <li>🔧 改善或拆除攔砂壩</li>
+    </ul>
+    <p>到了 <b>2007年</b>，七家灣溪的魚可以自己生寶寶了！第一階段成功！</p>
+  </div>
+  <div class="author-box">原文重點：人工繁殖僅爭取時間與備援。雪霸國家公園推動整體保育：管理農地、廢耕還林、污水處理、監測、改善壩體連續性。2007年完成第一階段，建立自然繁殖健康族群。</div>
+  <button class="btn btn-primary" onclick="go(9)">下一頁：魚魚回家了</button>
+</div>
+
+<!-- PAGE 9 -->
+<div class="page" id="p9">
+  <div class="badge">第9章 新的家</div>
+  <h2>不能把魚都放在同一條溪！</h2>
+  <p class="kid">如果魚都在同一條溪，一個大颱風、山崩就全沒了。所以要建立<b>衛星族群</b>，把魚送到別的乾淨溪流。</p>
+  <div class="scene">
+    <p>選擇放流地點：水流穩定、有躲洪水的地方。颱風後、繁殖前放流。</p>
+    <p>點名新家：</p>
+    <button class="btn btn-green" onclick="addRiver('羅葉尾溪')">羅葉尾溪 🏞️</button>
+    <button class="btn btn-green" onclick="addRiver('樂山溪')" style="margin-left:6px">樂山溪 🏞️</button>
+    <button class="btn btn-green" onclick="addRiver('合歡溪')" style="margin-left:6px">合歡溪 🏞️</button>
+    <div id="riverList" style="margin-top:10px; min-height:40px; background:#eef; border-radius:12px; padding:8px"></div>
+    <p style="margin-top:10px">然後觀察：有沒有定居？會不會移動？能不能過冬？最重要的是：<b>能不能在新溪流自己生寶寶？</b></p>
+    <p>從 <b>200多尾 ➜ 15000多尾</b></p>
+    <div style="display:flex; align-items:center; gap:10px">
+      <span>1995</span><span class="counter" id="countUp">200</span><span>2023</span><span style="font-size:2rem">🎉</span>
+    </div>
+    <button class="btn btn-pink" onclick="animateCount()">點我，看魚魚變多！</button>
+  </div>
+  <div class="author-box">原文重點：第二階段擴大分布建衛星族群，避免單一災害。選穩定流量、避難棲地，颱風季後繁殖季前放流，追蹤定居移動越冬與自然繁殖。羅葉尾溪、樂山溪、合歡溪。2023年逾15000尾對比1995年200餘尾，為台灣瀕危保育重要成果。氣候變遷仍是不確定因素。</div>
+  <button class="btn btn-primary" onclick="go(10)">下一頁：最深的意義</button>
+</div>
+
+<!-- PAGE 10 -->
+<div class="page" id="p10">
+  <div class="badge">第10章 三次發現</div>
+  <h2>原來，保護一條魚，是保護整座島！</h2>
+  <p class="kid"><b>櫻花鉤吻鮭最重要的意義，不只是稀少，而是讓台灣人重新認識大自然。</b></p>
+  <div class="scene">
+    <p>以前覺得：溪要直直的、河岸要整齊。現在知道：河需要深潭、淺瀨、倒木、陰影，才是魚的家。河不只是水管，是一個<b>活生生的生態系</b>。</p>
+    <p>保育不是把魚關起來不給人看，是讓牠自己會活、會生寶寶。</p>
+    <p style="margin-top:12px; font-weight:700">魚魚的三次發現：</p>
+    <div class="quiz-opt" onclick="this.classList.add('correct')">1️⃣ 第一次：山裡的居民在生活中發現牠，知道牠是溪的一部分（泰雅族）</div>
+    <div class="quiz-opt" onclick="this.classList.add('correct')">2️⃣ 第二次：科學家在1917-1919年認出牠、幫牠取名，知道台灣有高山鮭魚（青木、大島）</div>
+    <div class="quiz-opt" onclick="this.classList.add('correct')">3️⃣ 第三次：當牠快消失時，台灣人才發現，一條魚連著森林、河川、農業、工程、氣候、文化、整座島的歷史</div>
+  </div>
+  <div class="author-box">
+    <p style="font-size:1.1rem"><b>原文核心：</b>台灣島不大，卻從熱帶海岸到會下雪的高山，不到100公里。櫻花鉤吻鮭是北方家族在亞熱帶留下的孤群，代表巨大環境梯度。一百年前發現鮭魚，一百年後台灣人經由鮭魚重新發現自己的山河。</p>
+    <p>保護櫻花鉤吻鮭，是保護一條自然流動的溪、森林的陰影、泰雅族與山林的記憶、台灣與冰河時代的生命線。</p>
+  </div>
+  <div style="text-align:center; margin-top:20px">
+    <div style="font-size:3rem">🐟❤️🏔️</div>
+    <h2>我們有沒有資格，把比我們更古老的生命，在自己手上終結？</h2>
+    <p>這是陳加忠老師想問大家的話。</p>
+  </div>
+  <button class="btn btn-primary" onclick="go(11)">最後一頁：給下一代</button>
+</div>
+
+<!-- PAGE 11 FINAL -->
+<div class="page" id="p11">
+  <div class="badge">尾聲</div>
+  <h1>把山河，完整交給下一代</h1>
+  <p class="kid">我寫這篇文章的心意，是希望藉由一群從冰河時代活到今天的鮭魚，告訴我們這一代台灣人：<br><b>真正認識自己的土地，不只是知道它的名字與歷史，而是願不願意把自己曾經得到的山河，完整地交還給下一代。</b></p>
+  <div class="scene" style="text-align:center">
+    <p>小朋友，你願意幫忙嗎？</p>
+    <button class="btn btn-green" onclick="alert('太棒了！你可以：不亂丟垃圾、節約用水、認識溪流、多種樹！')">我願意！🌱</button>
+    <div style="margin-top:16px; font-size:2.5rem">👧👦➡️🏞️➡️👶🌏</div>
+  </div>
+
+  <div class="author-box">
+    <div><b>原文作者：陳 加忠</b>（Facebook 冰河遺民-臺灣山區發現櫻花鉤吻鮭的故事）</div>
+    <div style="font-size:.9rem; margin-top:6px">本繪本保留原文所有關鍵知識點：起源、泰雅族稱呼、青木赳雄1917鹽漬標本、大島正滿1919命名 Salmo formosanus / Oncorhynchus formosanus、櫻花鉤吻命名由來、冰期南下與陸封化、七家灣溪棲地需求、戰後開發與攔砂壩危害、1995僅200尾、雪霸國家公園整體保育、2007自然繁殖、衛星族群羅葉尾溪樂山溪合歡溪、2023逾15000尾、氣候變遷挑戰、三次發現的意義。</div>
+  </div>
+
+  <details>
+    <summary>📚 給老師與家長：點此看完整原文整理（附錄）</summary>
+    <div style="font-size:.95rem; line-height:1.7; white-space:pre-wrap; text-align:left">
+臺灣櫻花鉤吻鮭最深遠的意義，不只在於稀少，而在於改變台灣人對大自然的理解。
+
+早期開發觀念將河流視為水資源、山區為農業基地。溪流是否筆直、河岸是否整齊、壩體是否牢固，比魚類能否移動更受重視。鮭魚生存危機使台灣社會重新理解：河流不只是輸水管線，而是活生生的生態系統。一條河川需要溪水、深潭、淺瀨、倒木、陰影與不規則河岸，看似雜亂的河道對魚類是多樣棲地。
+
+保育不是把珍稀動物關圈禁止接近。真正保育是維持物種自行生存繁殖能力。人工繁殖僅為挽救危急族群，最終目標是讓鮭魚在自然河川出生長大繁殖，而非永遠依賴人類孵化。
+
+牠讓台灣人看到此海島自然獨特性。面積不大，卻因海拔落差、季風、地質與島嶼隔離，形成從熱帶海岸到高山寒冷溪流的多樣環境，不到一百公里可從亞熱帶平原上升至冬季降雪山岳，櫻花鉤吻鮭是此環境梯度代表。原屬北方寒冷水域演化家族，在台灣高山形成棲地，是寒帶鮭魚界在亞熱帶的孤群。
+
+一百多年前鹽漬鮭魚從大甲溪上游送到青木赳雄面前，改寫台灣動物地理學。大島正滿與學者命名時未預見瀕臨滅絕，更不知後來台灣人將為牠拆改善攔砂壩、種森林、停耕、建污水設施、人工孵化、揹幼魚入深山。
+
+故事包含三次不同發現：第一次是山中居民在生活中發現牠；第二次是現代科學1917-1919辨認描述牠；第三次是瀕臨消失時台灣社會才發現，一條魚生命連接森林、河川、農業、工程、氣候、文化與整座島嶼自然歷史。
+
+鮭魚身體不大，卻穿越冰河時代，祖先數萬年前南下，20世紀末逼近滅絕，被高山留下，活在泰雅族生活世界，又差點被人類滅絕。如今仍能在高山溪谷游動，不只是大自然慈悲，而是許多台灣人理解，生命一旦消失，沒有技術可真正重創。
+
+保護櫻花鉤吻鮭不只是保護一種魚，是保護自然流動的溪流、高山森林陰影、泰雅族與山林記憶、台灣與冰河時代殘留的生命線。讓人反省我們有沒有資格把比我們更古老的生命世界在自己手中終結？更是為尚未出生世代留下魚群、河流與保育完整山林生態的概念。
+
+一百年前台灣人在山中發現一種鮭魚，一百年後台灣人經由這種鮭魚重新發現自己的山河。
+
+作者心意：希望藉由從冰河時代活到今天的鮭魚，告訴我們這一代台灣人，真正認識自己土地，不只是知道名字與歷史，而是願不願意把曾經得到的山河完整交還給下一代。
+
+— 陳加忠
+    </div>
+  </details>
+
+  <div style="text-align:center; margin-top:24px">
+    <button class="btn btn-pink" onclick="go(0)">回到封面，再讀一次</button>
+    <p style="font-size:.9rem; opacity:.6; margin-top:12px">本繪本為單檔 HTML，已可直接上傳至 GitHub Pages。互動皆用原生 JS，無外部依賴。</p>
+  </div>
+</div>
+
+</div>
+
+<div class="nav">
+  <button class="btn" onclick="prev()" style="background:#fff">◀ 上一頁</button>
+  <span id="pageNum" style="display:flex; align-items:center; font-weight:700; padding:0 6px">1 / 12</span>
+  <button class="btn btn-primary" onclick="next()" style="padding:8px 16px">下一頁 ▶</button>
+</div>
+
+<script>
+let pageIds = ['p0','p1','p2','p3','p4','p4b','p5','p6','p7','p8','p9','p10','p11'];
+let cur=0;
+const total=13;
+function go(n){
+  if(n<0) n=0; if(n>=total) n=total-1;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  let pid = pageIds[n];
+  document.getElementById(pid).classList.add('active');
+  cur=n;
+  updateProg();
+  window.scrollTo(0,0);
+  sparkle();
+}
+function next(){ if(cur<total-1) go(cur+1) }
+function prev(){ if(cur>0) go(cur-1) }
+function updateProg(){
+  document.getElementById('prog').style.width=(cur/(total-1)*100)+'%';
+  document.getElementById('pageNum').textContent=(cur+1)+' / '+total;
+}
+function swimFish(el){
+  el.style.left='80%';
+  setTimeout(()=>el.style.left='10px',800);
+  popHeart(el);
+}
+function shake(el){
+  el.style.transform='rotate(5deg)';
+  setTimeout(()=>el.style.transform='rotate(-5deg)',100);
+  setTimeout(()=>{el.style.transform='rotate(0)'; document.getElementById('checkResult').classList.remove('hide')},300);
+}
+function speak(txt){ alert('族語小知識：'+txt+'\n（小朋友可以大聲念出來喔！）'); }
+function reveal(el,msg){ el.classList.add('correct'); el.textContent+=' → '+msg; }
+let habitats=[];
+function addHabitat(el,label){
+  el.style.transform='scale(1.4)';
+  setTimeout(()=>el.style.transform='scale(1)',200);
+  if(!habitats.includes(label)){ habitats.push(label); document.getElementById('habitatList').innerHTML=habitats.map(h=>'✅ '+h).join('<br>'); }
+}
+function removeDam(el){
+  el.style.opacity='0'; el.style.transform='translateY(20px)';
+  setTimeout(()=>el.remove(),400);
+  document.getElementById('freeFish').style.left='70%';
+  document.getElementById('damMsg').classList.remove('hide');
+}
+function growTree(){
+  const f=document.getElementById('forest');
+  f.textContent+='🌲';
+  f.style.transform='scale(1.1)'; setTimeout(()=>f.style.transform='scale(1)',200);
+}
+let rivers=[];
+function addRiver(name){
+  if(!rivers.includes(name)){ rivers.push(name); document.getElementById('riverList').innerHTML=rivers.map(r=>'🐟 已建立：'+r+' 的衛星族群').join('<br>'); }
+}
+function animateCount(){
+  let c=200; let target=15000; let el=document.getElementById('countUp');
+  let timer=setInterval(()=>{ c+= Math.floor((target-c)/10)+50; if(c>=target){c=target; clearInterval(timer);} el.textContent=c; },50);
+}
+function popHeart(el){
+  const s=document.createElement('div'); s.className='sparkle'; s.textContent='💖'; s.style.left=el.offsetLeft+'px'; s.style.top=el.offsetTop+'px';
+  el.parentElement.appendChild(s); setTimeout(()=>s.remove(),800);
+}
+function sparkle(){
+  const p=document.querySelector('.page.active'); if(!p) return;
+  for(let i=0;i<3;i++){ let s=document.createElement('div'); s.className='sparkle'; s.textContent=['✨','🌸','💧'][i]; s.style.left=Math.random()*80+10+'%'; s.style.top=Math.random()*60+20+'%'; p.appendChild(s); setTimeout(()=>s.remove(),800); }
+}
+document.addEventListener('keydown',e=>{ if(e.key==='ArrowRight') next(); if(e.key==='ArrowLeft') prev(); });
+updateProg();
+// click fish on cover
+document.querySelector('.big-fish')?.addEventListener('click',function(){ this.textContent='🐟💬 你好！我是櫻花鉤吻鮭！'; setTimeout(()=>this.textContent='🐟🌸',1500); });
+</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
